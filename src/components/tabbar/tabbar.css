@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 100%;
+  background: var(--app-background-color);
+  /* box-shadow: 0 48px 80px -32px rgba(0,0,0,0.3); */
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+}
+
+.label::selection {
+  background-color: var(--app-background-color);
+}
+
+
+.label {
+  width: 100%;
+  padding: 5px 10px;
+  background: var(--app-background-color);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px;
+  color: #7f7f7f;
+  z-index: -1;
+  transition: background 0.1s, color 0.1s;
+}
+
+
+
+
+

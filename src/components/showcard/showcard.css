@@ -1,0 +1,40 @@
+:host {
+  display: block;
+}
+
+
+.play-card  {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 10px;
+  /* background-color: rgba(25, 25, 25, .5); */
+}
+
+.podcast-img {
+  height: 70;
+  width: 70px;
+}
+
+.podcast-info {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 10px;
+  color: white;
+  justify-content: space-between;
+}
+
+.podcast-title {
+  font-size: medium;
+}
+
+.podcast-lastupd {
+  font-size: small;
+
+}
+
+
+
+
+
+
+

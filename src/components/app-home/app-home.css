@@ -1,0 +1,24 @@
+.app-home {
+  padding: 10px;
+  background: #121212;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+
+
+.main-content {
+  padding: 10px;
+  flex: 1;
+  padding-bottom: 60px;
+}
+
+
+.playbar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+

@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.play-card {
+  background-color: rgba(38, 38, 38, 1);
+  display: flex;
+  flex-flow: column nowrap;
+  color: white;
+  padding: 10px;
+  margin: 10px 0px;
+}
+
+.img-row {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.podcast-img {
+  height: 100px;
+  width: 100px;
+  padding: 10px;
+}
+
+.podcast-info {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.episode-title {
+  font-weight: bold;
+  font-size: medium;
+  padding: 5px;
+}
+
+.podcast-title {
+  font-size: small;
+  padding: 5px;
+}
+
+.description {
+  font-size: small;
+  padding-bottom: 5px;
+  overflow: hidden;
+  height: 80px;
+}
+
+.control-row {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  font-size: smaller;
+}
+
+.play-row {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-around;
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+
+
+
+
+
