@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Component, h, Prop,getAssetPath } from '@stencil/core';
 import {  getReadableDay } from '../../util';
 
@@ -22,31 +23,42 @@ export class Playcard {
 
   @Prop() playImage = 'play_circle.svg';
 
+
+
+  setAudioMetadata() {
+    if (!'mediaSession' in window.navigator) {
+      return
+    }
+
+      let audio : HTMLAudioElement = window['podcast'];
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: this.episodeTitle,
+        //artist: this.,
+        album: this.podcastTitle,
+        artwork: [
+          { src: this.podcastThumbnail }
+        ]
+      });
+    
+      let skipTime = 15; 
+
+      navigator.mediaSession.setActionHandler('seekbackward', function() {
+        audio.currentTime = Math.max(audio.currentTime - skipTime, 0);
+      });
+
+      navigator.mediaSession.setActionHandler('seekforward', function() {
+        audio.currentTime = Math.min(audio.currentTime + skipTime, audio.duration);
+      });
+
+  }
+
   async onClickPlay() {
    
     if(window['podcast'] == null) {
       window['podcast'] = new Audio();
-      // let pod : HTMLAudioElement = window['podcast']
-      // pod.src = this.playUrl;
-      // pod.play()
     }
-    // else {
-    //   let pod : HTMLAudioElement = window['podcast'];
-    //   if(pod.src == this.playUrl) {
-    //     if(pod.paused) {
-    //       pod.play()
-    //     } 
-    //     else {
-    //       pod.pause();
-    //     }
-    //   }
-    //   else {
-    //     window['podcast'] = new Audio();
-    //     pod.src = this.playUrl;
-    //     pod.play()
-    //   } 
-    // }
-
+   
     let pod : HTMLAudioElement = window['podcast']
 
 
@@ -58,7 +70,9 @@ export class Playcard {
     
 
     if(pod.paused || pod.seeking) {
-      pod.play();
+      pod.play()
+      .then(_ => this.setAudioMetadata())
+      .catch(err => console.log('audio metadata error ' + err))
     }
     else {
       pod.pause();

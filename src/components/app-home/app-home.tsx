@@ -49,13 +49,13 @@ export class AppHome {
         {this.page == 1 ? 
         <div class="episodes">
            {this.podcasts.map((podcast) =>
-           <app-showcard podcastThumbnail={podcast.thumbnail} podcastTitle={podcast.title} created={podcast.latest_pub_date_ms} publisher={podcast.publisher}  ></app-showcard>
+           <app-showcard key={podcast.id} podcastThumbnail={podcast.thumbnail} podcastTitle={podcast.title} created={podcast.latest_pub_date_ms} publisher={podcast.publisher}  ></app-showcard>
         )}
 
         </div>
         :<div class="shows">
           {this.podcasts[0].episodes.map((episode) =>
-           <app-playcard podcastThumbnail={episode.thumbnail} episodeTitle={episode.title} podcastTitle={this.podcasts[0].title} episodeDescription={episode.description} created={episode.pub_date_ms} playUrl={episode.audio}  ></app-playcard>
+           <app-playcard key={episode.id} podcastThumbnail={episode.thumbnail} episodeTitle={episode.title} podcastTitle={this.podcasts[0].title} episodeDescription={episode.description} created={episode.pub_date_ms} playUrl={episode.audio}  ></app-playcard>
           )}
         </div>
         }
