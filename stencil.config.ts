@@ -9,9 +9,7 @@ export const config: Config = {
     {
       type: 'www',
       serviceWorker: {
-        globPatterns: [
-          '**/*.{js,css,json,html,ico,png}'
-        ]
+        swSrc: './src/sw.js'
       },
       baseUrl: 'https://podcast-gdp.web.app'
     }

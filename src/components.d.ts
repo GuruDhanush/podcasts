@@ -19,8 +19,7 @@ export namespace Components {
     'created': number;
     'episodeDescription': string;
     'episodeTitle': string;
-    'playImage': string;
-    'playUrl': any;
+    'playUrl': string;
     'podcastThumbnail': string;
     'podcastTitle': string;
   }
@@ -36,6 +35,7 @@ export namespace Components {
     'page': number;
     'tabLabels': string[];
   }
+  interface PodcastPlayer {}
 }
 
 declare global {
@@ -82,6 +82,12 @@ declare global {
     prototype: HTMLAppTabbarElement;
     new (): HTMLAppTabbarElement;
   };
+
+  interface HTMLPodcastPlayerElement extends Components.PodcastPlayer, HTMLStencilElement {}
+  var HTMLPodcastPlayerElement: {
+    prototype: HTMLPodcastPlayerElement;
+    new (): HTMLPodcastPlayerElement;
+  };
   interface HTMLElementTagNameMap {
     'app-home': HTMLAppHomeElement;
     'app-playbar': HTMLAppPlaybarElement;
@@ -90,6 +96,7 @@ declare global {
     'app-root': HTMLAppRootElement;
     'app-showcard': HTMLAppShowcardElement;
     'app-tabbar': HTMLAppTabbarElement;
+    'podcast-player': HTMLPodcastPlayerElement;
   }
 }
 
@@ -103,8 +110,7 @@ declare namespace LocalJSX {
     'created'?: number;
     'episodeDescription'?: string;
     'episodeTitle'?: string;
-    'playImage'?: string;
-    'playUrl'?: any;
+    'playUrl'?: string;
     'podcastThumbnail'?: string;
     'podcastTitle'?: string;
   }
@@ -121,6 +127,7 @@ declare namespace LocalJSX {
     'page'?: number;
     'tabLabels'?: string[];
   }
+  interface PodcastPlayer {}
 
   interface IntrinsicElements {
     'app-home': AppHome;
@@ -130,6 +137,7 @@ declare namespace LocalJSX {
     'app-root': AppRoot;
     'app-showcard': AppShowcard;
     'app-tabbar': AppTabbar;
+    'podcast-player': PodcastPlayer;
   }
 }
 
@@ -146,6 +154,7 @@ declare module "@stencil/core" {
       'app-root': LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
       'app-showcard': LocalJSX.AppShowcard & JSXBase.HTMLAttributes<HTMLAppShowcardElement>;
       'app-tabbar': LocalJSX.AppTabbar & JSXBase.HTMLAttributes<HTMLAppTabbarElement>;
+      'podcast-player': LocalJSX.PodcastPlayer & JSXBase.HTMLAttributes<HTMLPodcastPlayerElement>;
     }
   }
 }

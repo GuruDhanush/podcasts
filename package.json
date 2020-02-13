@@ -8,14 +8,18 @@
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
-    "generate": "stencil generate"
+    "generate": "stencil generate",
+    "help": "stencil --help"
   },
   "dependencies": {
     "@stencil/core": "^1.8.4",
-    "@stencil/router": "^1.0.1"
+    "@stencil/router": "^1.0.1",
+    "@stencil/state-tunnel": "^1.0.1",
+    "@types/node": "^13.7.0",
+    "start": "^5.1.0"
   },
   "license": "MIT",
   "devDependencies": {
-    "workbox-build": "^4.3.1"
+    "workbox-build": "4.3.1"
   }
 }

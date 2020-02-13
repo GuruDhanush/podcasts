@@ -10,18 +10,20 @@ export class AppRoot {
 
   render() {
     return (
-      <div class='root' > 
+      <div class='root' >
         <header>
           <h1>Podcasts</h1>
         </header>
 
         <main>
-          <stencil-router>
-            <stencil-route-switch scrollTopOffset={0}>
-              <stencil-route url='/' component='app-home' exact={true} />
-              {/* <stencil-route url='/profile/:name' component='app-profile' /> */}
-            </stencil-route-switch>
-          </stencil-router>
+          <podcast-player>
+            <stencil-router>
+              <stencil-route-switch scrollTopOffset={0}>
+                <stencil-route url='/' component='app-home' exact={true} />
+                {/* <stencil-route url='/profile/:name' component='app-profile' /> */}
+              </stencil-route-switch>
+            </stencil-router>
+          </podcast-player>
         </main>
 
       </div>
