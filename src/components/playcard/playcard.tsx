@@ -1,5 +1,5 @@
 import { Component, h, Prop, getAssetPath } from '@stencil/core';
-import { getReadableDay, Episode } from '../../util';
+import { getReadableDay, Episode, PlayStatus } from '../../util';
 import Tunnel from '../data/audio';
 
 
@@ -24,9 +24,20 @@ export class Playcard {
 
 
     
-  togglePlayButton(episode : Episode, isPlaying: boolean) {
-    if (episode && episode.audio == this.playUrl && isPlaying) {
-      return getAssetPath(`/assets/${this.pauseImage}`);
+  togglePlayButton(episode : Episode, playStatus: PlayStatus) {
+    if(episode && episode.audio == this.playUrl) {
+      if(playStatus === PlayStatus.Play) {
+        return getAssetPath(`/assets/${this.pauseImage}`);
+      }
+      else if(playStatus === PlayStatus.Loading) {
+        return getAssetPath(`/assets/${this.pauseImage}`);
+      }
+      else if(playStatus === PlayStatus.Paused) {
+        return getAssetPath(`/assets/${this.playImage}`);
+      }
+      else if(playStatus === PlayStatus.Playing) {
+        return getAssetPath(`/assets/${this.pauseImage}`);
+      }
     }
     return getAssetPath(`/assets/${this.playImage}`);
   }
@@ -39,7 +50,7 @@ export class Playcard {
     return (
       <div>
         <Tunnel.Consumer>
-          {({  play, episode, isPlaying }) => (
+          {({  play, episode, playStatus }) => (
             <div class="play-card">
               <div class="img-row">
                 <img class="podcast-img" src={this.podcastThumbnail} ></img>
@@ -52,11 +63,12 @@ export class Playcard {
               <div class="control-row">
                 <div class="play-row">
                   <button onClick={() => play({ title: this.episodeTitle, audio: this.playUrl, thumbnail: this.podcastThumbnail, description: this.episodeDescription }, this.podcastTitle)}>
-                    <img src={this.togglePlayButton(episode, isPlaying)} />
+                    <img src={this.togglePlayButton(episode, playStatus)} />
                   </button>
                 </div>
                 <div class="podcast-created">{'Last Updated ' + getReadableDay(this.created)}</div>
               </div>
+              {/* <progress class="play-progress" max="100" value="10"   ></progress> */}
             </div>
           )}
         </Tunnel.Consumer>

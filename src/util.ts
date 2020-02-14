@@ -22,6 +22,14 @@ export class Podcast {
     thumbnail?: string;
   }
 
+  export enum PlayStatus {
+    Play,
+    Playing,
+    Paused,
+    Loading,
+    Completed
+  }
+
 
   function getMonth(month: number) {
     return isNaN(month) ? null : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][month];

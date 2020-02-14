@@ -1,11 +1,11 @@
 import { createProviderConsumer } from "@stencil/state-tunnel";
-import { Episode } from "../../util";
+import { Episode, PlayStatus } from "../../util";
 import { h } from '@stencil/core';
 
 export interface State {
   episode?: Episode,
   play?: (episode: Episode, podcastTitle: string) => void,
-  isPlaying?: boolean,
+  playStatus?: PlayStatus,
   togglePlayButton?: (playUrl : string) => string
 }
 
