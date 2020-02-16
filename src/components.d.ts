@@ -7,7 +7,9 @@
 
 
 import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
-
+import {
+  MatchResults,
+} from '@stencil/router';
 
 export namespace Components {
   interface AppHome {}
@@ -16,17 +18,19 @@ export namespace Components {
     'podcastThumbnail': string;
   }
   interface AppPlaycard {
-    'created': number;
+    'created': Date;
     'episodeDescription': string;
     'episodeTitle': string;
     'playUrl': string;
     'podcastThumbnail': string;
     'podcastTitle': string;
   }
-  interface AppPodcasthome {}
+  interface AppPodcasthome {
+    'match': MatchResults;
+  }
   interface AppRoot {}
   interface AppShowcard {
-    'created': number;
+    'created'?: Date;
     'podcastThumbnail': string;
     'podcastTitle': string;
     'publisher': string;
@@ -36,6 +40,7 @@ export namespace Components {
     'tabLabels': string[];
   }
   interface PodcastPlayer {}
+  interface ScrollInfinite {}
 }
 
 declare global {
@@ -88,6 +93,12 @@ declare global {
     prototype: HTMLPodcastPlayerElement;
     new (): HTMLPodcastPlayerElement;
   };
+
+  interface HTMLScrollInfiniteElement extends Components.ScrollInfinite, HTMLStencilElement {}
+  var HTMLScrollInfiniteElement: {
+    prototype: HTMLScrollInfiniteElement;
+    new (): HTMLScrollInfiniteElement;
+  };
   interface HTMLElementTagNameMap {
     'app-home': HTMLAppHomeElement;
     'app-playbar': HTMLAppPlaybarElement;
@@ -97,6 +108,7 @@ declare global {
     'app-showcard': HTMLAppShowcardElement;
     'app-tabbar': HTMLAppTabbarElement;
     'podcast-player': HTMLPodcastPlayerElement;
+    'scroll-infinite': HTMLScrollInfiniteElement;
   }
 }
 
@@ -107,17 +119,19 @@ declare namespace LocalJSX {
     'podcastThumbnail'?: string;
   }
   interface AppPlaycard {
-    'created'?: number;
+    'created'?: Date;
     'episodeDescription'?: string;
     'episodeTitle'?: string;
     'playUrl'?: string;
     'podcastThumbnail'?: string;
     'podcastTitle'?: string;
   }
-  interface AppPodcasthome {}
+  interface AppPodcasthome {
+    'match'?: MatchResults;
+  }
   interface AppRoot {}
   interface AppShowcard {
-    'created'?: number;
+    'created'?: Date;
     'podcastThumbnail'?: string;
     'podcastTitle'?: string;
     'publisher'?: string;
@@ -128,6 +142,7 @@ declare namespace LocalJSX {
     'tabLabels'?: string[];
   }
   interface PodcastPlayer {}
+  interface ScrollInfinite {}
 
   interface IntrinsicElements {
     'app-home': AppHome;
@@ -138,6 +153,7 @@ declare namespace LocalJSX {
     'app-showcard': AppShowcard;
     'app-tabbar': AppTabbar;
     'podcast-player': PodcastPlayer;
+    'scroll-infinite': ScrollInfinite;
   }
 }
 
@@ -155,6 +171,7 @@ declare module "@stencil/core" {
       'app-showcard': LocalJSX.AppShowcard & JSXBase.HTMLAttributes<HTMLAppShowcardElement>;
       'app-tabbar': LocalJSX.AppTabbar & JSXBase.HTMLAttributes<HTMLAppTabbarElement>;
       'podcast-player': LocalJSX.PodcastPlayer & JSXBase.HTMLAttributes<HTMLPodcastPlayerElement>;
+      'scroll-infinite': LocalJSX.ScrollInfinite & JSXBase.HTMLAttributes<HTMLScrollInfiniteElement>;
     }
   }
 }

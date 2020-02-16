@@ -17,8 +17,8 @@
 }
 
 .podcast-img {
-  height: 100px;
-  width: 100px;
+  height: auto;
+  max-width: 100px;
   padding: 10px;
 }
 
@@ -42,10 +42,12 @@
   font-size: small;
   padding-bottom: 5px;
   overflow: hidden;
-  height: 80px;
+  line-height: 1.5em;
+  height: 3.5em;
 }
 
 .control-row {
+  padding-top: 5px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;

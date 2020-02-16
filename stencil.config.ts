@@ -11,7 +11,7 @@ export const config: Config = {
       serviceWorker: {
         swSrc: './src/sw.js'
       },
-      baseUrl: 'https://podcast-gdp.web.app'
+      baseUrl: 'https://podcast-gdp.web.app/'
     }
   ]
 };

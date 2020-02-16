@@ -15,13 +15,11 @@ export class Playcard {
   @Prop() episodeTitle: string;
   @Prop() podcastTitle: string;
   @Prop() episodeDescription: string;
-  @Prop() created: number;
+  @Prop() created: Date;
   @Prop() playUrl: string;
 
   playImage = 'play_circle.svg';
   pauseImage = 'pause_circle.svg';
-
-
 
     
   togglePlayButton(episode : Episode, playStatus: PlayStatus) {
@@ -41,9 +39,6 @@ export class Playcard {
     }
     return getAssetPath(`/assets/${this.playImage}`);
   }
-
-
-
 
 
   render() {
@@ -75,5 +70,8 @@ export class Playcard {
       </div>
     );
   }
+
+  
+ 
 
 }

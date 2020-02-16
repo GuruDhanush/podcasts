@@ -11,8 +11,8 @@
 }
 
 .podcast-img {
-  height: 70;
-  width: 70px;
+  height: auto;
+  max-width: 70px;
 }
 
 .podcast-info {

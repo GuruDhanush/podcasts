@@ -1,4 +1,57 @@
+import { DBSchema } from 'idb'
 
+
+export interface PodDB extends DBSchema {
+  podcasts: {
+    key: string;
+    value: Podcast1;
+    indexes: { 'pubDate': Date }
+  };
+  episodes: {
+    key: string;
+    value: Episode1;
+    indexes: { 'pubDate': Date, 'podcastID': string };
+  };
+  homeStore: {
+    key: string;
+    value: string;
+  };
+  offlineStore: {
+    key: string;
+    value: string;
+  }
+}
+
+export class Podcast1 {
+  ID: string;
+  title: string;
+  url: string;
+  description: string;
+  pubDate?: Date;
+  thumbnail?: string;
+  ttl?: number; 
+  publisher: string;
+}
+
+export class Episode1 {
+  ID: string;
+  podcastID: string
+  title: string;
+  url: string;
+  description: string;
+  pubDate?: Date;
+  category?: string[];
+  audio: string;
+  audioLength: number;
+  playedLength: number = 0;
+  isDownloaded: boolean = false;
+  audioType?: string;
+}
+
+export class HomeStore {
+  onlineID: string[];
+  offlineID: string[];
+}
 
 
 export class Podcast {
@@ -39,17 +92,16 @@ export class Podcast {
     return isNaN(week) ? null : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][week];
   }
   
-  export function getReadableDay(date: number) {
+  export function getReadableDay(givendate: Date) {
 
     let currentDate = new Date();
-    let episodeDate = new Date(date);
-    if(currentDate.getMilliseconds() - 604800000 > date) {
-      return getWeek(episodeDate.getDay());
+    if(currentDate.getMilliseconds() - 604800000 > givendate.getMilliseconds()) {
+      return getWeek(givendate.getDay());
     }
-    if(currentDate.getFullYear() - episodeDate.getFullYear() > 0) {
-      return episodeDate.getFullYear() + ' ' + getMonth(episodeDate.getMonth()) + ' ' + episodeDate.getDate()
+    if(currentDate.getFullYear() - givendate.getFullYear() > 0) {
+      return givendate.getFullYear() + ' ' + getMonth(givendate.getMonth()) + ' ' + givendate.getDate()
     }
-    return getMonth(episodeDate.getMonth()) + ' ' + episodeDate.getDate()
+    return getMonth(givendate.getMonth()) + ' ' + givendate.getDate()
   }
 
   

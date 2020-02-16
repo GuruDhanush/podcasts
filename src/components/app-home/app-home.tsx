@@ -1,5 +1,7 @@
-import { Component, h,getAssetPath, Element, State, Listen } from '@stencil/core';
-import { Podcast } from '../../util.js'
+import { Component, h, Element, State, Listen } from '@stencil/core';
+import { PodDB, Podcast1, Episode1 } from '../../util.js'
+import { IDBPDatabase, openDB } from 'idb';
+
 
 @Component({
   tag: 'app-home',
@@ -19,26 +21,37 @@ export class AppHome {
   selectedChangedHandler(event: CustomEvent) {
     this.page = event.detail;
   }
-  
-  @State() page : number = 0
+
+  @State() page: number = 0
 
 
   @Element() el: HTMLElement;
 
-  @State() podcasts: Podcast[] = [];
+  @State() podcasts: Podcast1[] = [];
+  @State() episodes: Episode1[] = [];
+
+  db: IDBPDatabase<PodDB>;
 
   async loadResult() {
-
-      let response = await fetch(getAssetPath('/assets/result.json'), {  headers : { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-       }});
-      let data = await response.json();
-      this.podcasts = [ data as Podcast]
-      console.log(this.podcasts);
+    this.db = await openDB<PodDB>('pod-db', 1, {})
+    this.podcasts  =await this.db.getAll("podcasts");
+    let cursor = await this.db.transaction("episodes").store.index("pubDate").openCursor(null, "prev");
+    let count = 0;
+    let episodes = [];
+    while(cursor && count<20) {
+      count++;
+      episodes.push(cursor.value);
+      cursor = await cursor.continue();
+    }
+    this.episodes = episodes;
   }
 
- 
+
+
+
+
+
+
   render() {
     return (
       <div class='app-home' >
@@ -46,21 +59,36 @@ export class AppHome {
         <app-tabbar page={this.page} tabLabels={['Episodes', 'Shows']} ></app-tabbar>
 
         <div class="main-content">
-        {this.page == 1 ? 
-        <div class="episodes">
-           {this.podcasts.map((podcast) =>
-           <app-showcard key={podcast.id} podcastThumbnail={podcast.thumbnail} podcastTitle={podcast.title} created={podcast.latest_pub_date_ms} publisher={podcast.publisher}  ></app-showcard>
-        )}
+          {this.page == 1 ?
+            <div class="episodes">
+              {this.podcasts.map((podcast) =>
+                <stencil-route-link url={'/podcast/'+ encodeURI(podcast.title)}>
+                  <app-showcard key={podcast.ID}
+                    podcastThumbnail={podcast.thumbnail}
+                    podcastTitle={podcast.title}
+                    created={podcast.pubDate}
+                    publisher={podcast.publisher}>
+                  </app-showcard>
+                </stencil-route-link>
 
+              )}
+
+            </div>
+            : <div class="shows">
+              {this.episodes.map((episode) =>
+                <app-playcard key={episode.ID}
+                  podcastThumbnail={episode.url ? episode.url : this.podcasts[0].url}
+                  episodeTitle={episode.title}
+                  podcastTitle={this.podcasts[0].title}
+                  episodeDescription={episode.description}
+                  created={episode.pubDate}
+                  playUrl={episode.audio} >
+                </app-playcard>
+              )}
+            </div>
+          }
         </div>
-        :<div class="shows">
-          {this.podcasts[0].episodes.map((episode) =>
-           <app-playcard key={episode.id} podcastThumbnail={episode.thumbnail} episodeTitle={episode.title} podcastTitle={this.podcasts[0].title} episodeDescription={episode.description} created={episode.pub_date_ms} playUrl={episode.audio}  ></app-playcard>
-          )}
-        </div>
-        }
-        </div>
-        
+
 
         {/* <app-playbar class="playbar" ></app-playbar> */}
 
@@ -73,3 +101,4 @@ export class AppHome {
     );
   }
 }
+

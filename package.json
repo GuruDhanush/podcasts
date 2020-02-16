@@ -16,6 +16,7 @@
     "@stencil/router": "^1.0.1",
     "@stencil/state-tunnel": "^1.0.1",
     "@types/node": "^13.7.0",
+    "idb": "^5.0.1",
     "start": "^5.1.0"
   },
   "license": "MIT",

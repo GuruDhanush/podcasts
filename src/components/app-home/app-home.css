@@ -21,4 +21,8 @@
   width: 100%;
 }
 
+stencil-route-link > a {
+  text-decoration: none;
+}
+
 
