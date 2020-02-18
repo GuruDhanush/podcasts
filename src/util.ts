@@ -104,4 +104,12 @@ export class Podcast {
     return getMonth(givendate.getMonth()) + ' ' + givendate.getDate()
   }
 
+  export function secureUrl(url: string) : string {
+    if(url.startsWith("http://")){
+      url = url.replace("http://", "https://");
+    }
+
+    return url;
+  }
+
   

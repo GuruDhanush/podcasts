@@ -1,3 +1,10 @@
 :host {
   display: block;
 }
+
+
+.epsiodes-list {
+  padding: 10px;
+  flex: 1;
+  padding-bottom: 60px;
+}

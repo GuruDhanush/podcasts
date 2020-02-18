@@ -1,6 +1,6 @@
 import { Component, h, State } from '@stencil/core';
 import Tunnel from '../data/audio';
-import { Episode, PlayStatus, Podcast1, PodDB } from '../../util';
+import { Episode, PlayStatus, Podcast1, PodDB, secureUrl } from '../../util';
 import { setAudioMetadata } from '../../metadata-utils';
 //import { openDB } from 'idb/with-async-ittr';
 import { openDB, IDBPDatabase } from 'idb';
@@ -21,6 +21,12 @@ export class Player {
 
   db: IDBPDatabase<PodDB>;
   namespace = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
+
+  podcasts = [
+    'https://feeds.megaphone.fm/the-daily-show',
+    'https://rss.art19.com/the-daily',
+    'https://softwareengineeringdaily.com/feed/podcast/',
+  ]
 
 
 
@@ -71,21 +77,23 @@ export class Player {
 
   async loadRecords() {
 
-    let res = new DOMParser()
-      .parseFromString(await (await fetch('https://cors.x7.workers.dev/https://feeds.megaphone.fm/the-daily-show')).text(), 'application/xml');
+    for (const i in this.podcasts) {
+      let res = new DOMParser()
+      .parseFromString(await (await fetch('https://cors.x7.workers.dev/'+ this.podcasts[i])).text(), 'application/xml');
 
-    //console.log(res);
-    await this.loadChannel(res);
+      //console.log(res);
+      await this.loadChannel(res, this.podcasts[i]);
+    }
   }
 
-  async loadChannel(channel: Document) {
+  async loadChannel(channel: Document, podcasturl: string) {
     let podcast: Podcast1 = {
-      ID: channel.querySelector("link").textContent,
+      ID: secureUrl(podcasturl),
       publisher: channel.getElementsByTagNameNS(this.namespace, "author")[0].textContent,
-      title: channel.querySelector("title").text,
+      title: channel.querySelector("title").textContent,
       description: channel.querySelector("description").textContent,
-      url: channel.querySelector("link").textContent,
-      thumbnail: channel.querySelector("image url").textContent
+      url: secureUrl(channel.querySelector("link").textContent),
+      thumbnail: secureUrl(channel.querySelector("image url").textContent)
     }
 
     if(!await this.db.getKey("podcasts", podcast.ID)) {
@@ -97,29 +105,53 @@ export class Player {
 
   async loadEpisodes(episodes: Document, podcast: Podcast1) {
 
-    episodes.querySelectorAll("item").forEach( async (value) => {
-      let guid = value.querySelector("guid").textContent;
+    let maxPubDate = null;
+    try {
+      let maxdateCursor = await this.db.transaction("episodes").store.index("pubDate").openCursor(null, "prev");
+      while(maxdateCursor) {
+        if(maxdateCursor.value.podcastID == podcast.ID) {
+          maxPubDate = maxdateCursor.value.pubDate;
+          break;
+        }
+        maxdateCursor = await maxdateCursor.continue();
+      }
+      //maxPubDate = (await this.db.transaction("episodes").store.index("pubDate").openCursor(null, "prev")).value.pubDate;
+    }
+    catch {
+      console.log("Empty DB");
+    }
+
+    const listepisodes = episodes.querySelectorAll("item");
+    for(let i = 0; i < listepisodes.length; i++) {
+      let episode = listepisodes[i];
+      let guid = episode.querySelector("guid").textContent;
+      let epsiodeDate = new Date(episode.querySelector("pubDate").textContent);
+
+      if(+epsiodeDate <= +maxPubDate) {
+        return;
+      }
+
       if(!await this.db.getKeyFromIndex("episodes", "podcastID", guid)) {
-        let enclosure = value.querySelector("enclosure");
-        let itunesLength = value.getElementsByTagNameNS(this.namespace, "duration")[0].textContent;
+        let enclosure = episode.querySelector("enclosure");
+        let itunesLength = episode.getElementsByTagNameNS(this.namespace, "duration")[0].textContent;
         let audioLength = !itunesLength ? itunesLength : enclosure.getAttribute("length");
-        let thumbnail = value.getElementsByTagNameNS(this.namespace, "image")[0];
+        let thumbnail = episode.getElementsByTagNameNS(this.namespace, "image")[0];
         let thumbnaiURL = thumbnail ? thumbnail.getAttribute("href") : podcast.thumbnail;
         this.db.put("episodes", {
           ID: guid,
           podcastID: podcast.ID,
-          title: value.querySelector("title").textContent,
-          url: thumbnaiURL,
-          description: value.querySelector("description").textContent,
-          pubDate: new Date(value.querySelector("pubDate").textContent),
-          audio: value.querySelector("enclosure").getAttribute("url"),
+          title: episode.querySelector("title").textContent,
+          url: secureUrl(thumbnaiURL),
+          description: episode.querySelector("description").textContent,
+          pubDate: epsiodeDate,
+          audio: secureUrl(episode.querySelector("enclosure").getAttribute("url")),
           audioLength: Number.parseInt(audioLength),
           audioType: enclosure.getAttribute("type"),
           playedLength: 0,
           isDownloaded: false
         });
       }
-    }); 
+    } 
   }
 
 

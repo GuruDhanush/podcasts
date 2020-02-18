@@ -1,6 +1,7 @@
-import { Component, getAssetPath, h, State, Prop } from '@stencil/core';
-import { Podcast, Episode } from '../../util';
+import { Component, h, State, Prop } from '@stencil/core';
+import { PodDB, Episode1, Podcast1 } from '../../util';
 import { MatchResults } from '@stencil/router';
+import { IDBPDatabase, openDB } from 'idb';
 
 @Component({
   tag: 'app-podcasthome',
@@ -14,20 +15,40 @@ export class Podcasthome {
     await this.loadResult();
   }
 
-  @State() Episodes: Episode[]
+  @State() Episodes: Episode1[]
   @Prop() match: MatchResults;
+  @State() podcast: Podcast1;
+
+  db: IDBPDatabase<PodDB>;
+
+  async loadResult() {
+    let podcastID = decodeURIComponent(this.match.params.podcastID);
+    this.db = await openDB<PodDB>('pod-db', 1, {});
+    this.podcast = await this.db.transaction("podcasts").store.get(podcastID);
+    let cursor = await this.db.transaction("episodes").store.index("pubDate").openCursor(null, "prev");
+    let count = 0;
+    let episodes = [];
+    while(cursor && count<20) {
+      if(cursor.value.podcastID == podcastID) {
+        count++;
+        episodes.push(cursor.value);
+      } 
+      cursor = await cursor.continue();
+    }
+    this.Episodes = episodes;
+  }
 
   
-  async loadResult() {
+//   async loadResult() {
 
-    let response = await fetch(getAssetPath('/assets/result.json'), {  headers : { 
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-     }});
-    let data = await response.json();
-    this.Episodes = [ data as Podcast][0].episodes;
-    //console.log(this.podcasts);
-}
+//     let response = await fetch(getAssetPath('/assets/result.json'), {  headers : { 
+//       'Content-Type': 'application/json',
+//       'Accept': 'application/json'
+//      }});
+//     let data = await response.json();
+//     this.Episodes = [ data as Podcast][0].episodes;
+//     //console.log(this.podcasts);
+// }
 
   render() {
     return (
@@ -49,12 +70,12 @@ export class Podcasthome {
         </div> */}
         <div class="epsiodes-list">
         {this.Episodes.map((episode) =>
-           <app-playcard key={episode.id} 
-              podcastThumbnail={episode.thumbnail} 
+           <app-playcard key={episode.ID} 
+              podcastThumbnail={episode.url} 
               episodeTitle={episode.title} 
-              podcastTitle={this.match.params.podcastName}
+              podcastTitle={this.podcast.title}
               episodeDescription={episode.description} 
-              created={new Date()} 
+              created={episode.pubDate} 
               playUrl={episode.audio} >
             </app-playcard>
           )}

@@ -62,7 +62,7 @@ export class AppHome {
           {this.page == 1 ?
             <div class="episodes">
               {this.podcasts.map((podcast) =>
-                <stencil-route-link url={'/podcast/'+ encodeURI(podcast.title)}>
+                <stencil-route-link url={'/podcast/'+ encodeURIComponent(podcast.ID)}>
                   <app-showcard key={podcast.ID}
                     podcastThumbnail={podcast.thumbnail}
                     podcastTitle={podcast.title}
