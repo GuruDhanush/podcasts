@@ -18,9 +18,15 @@ export interface PodDB extends DBSchema {
   };
   offlineStore: {
     key: string;
-    value: string;
+    value: OfflineFiles
   }
 }
+
+export class OfflineFiles {
+  url: string;
+  blob: Blob
+}
+
 
 export class Podcast1 {
   ID: string;
@@ -46,6 +52,7 @@ export class Episode1 {
   playedLength: number = 0;
   isDownloaded: boolean = false;
   audioType?: string;
+  podcastTitle: string;
 }
 
 export class HomeStore {
@@ -95,7 +102,7 @@ export class Podcast {
   export function getReadableDay(givendate: Date) {
 
     let currentDate = new Date();
-    if(currentDate.getMilliseconds() - 604800000 > givendate.getMilliseconds()) {
+    if(currentDate.getTime() - 518400000 < givendate.getTime()) {
       return getWeek(givendate.getDay());
     }
     if(currentDate.getFullYear() - givendate.getFullYear() > 0) {
@@ -111,5 +118,8 @@ export class Podcast {
 
     return url;
   }
+
+ 
+
 
   

@@ -26,10 +26,10 @@ export class Player {
     'https://feeds.megaphone.fm/the-daily-show',
     'https://rss.art19.com/the-daily',
     'https://softwareengineeringdaily.com/feed/podcast/',
+    'https://rustacean-station.org/podcast.rss',
+    'https://video-api.wsj.com/podcast/rss/wsj/whats-news',
+    'https://podcast.posttv.com/',
   ]
-
-
-
 
   play = (episode: Episode, podcastTitle: string) => {
     this._episode = episode;
@@ -69,10 +69,18 @@ export class Player {
         });
         episodes.createIndex('pubDate', 'pubDate');
         episodes.createIndex('podcastID', 'podcastID');
+
+        db.createObjectStore('offlineStore', {
+          keyPath: 'url'
+        });
       }
     });
-
-    await this.loadRecords();
+    try {
+      await this.loadRecords();
+    }
+    catch(e) {
+      console.log("offline");
+    }
   }
 
   async loadRecords() {
@@ -87,13 +95,16 @@ export class Player {
   }
 
   async loadChannel(channel: Document, podcasturl: string) {
+
+    let itunesThumbnail = channel.getElementsByTagNameNS(this.namespace,"image")[0]?.textContent;
+
     let podcast: Podcast1 = {
       ID: secureUrl(podcasturl),
-      publisher: channel.getElementsByTagNameNS(this.namespace, "author")[0].textContent,
-      title: channel.querySelector("title").textContent,
-      description: channel.querySelector("description").textContent,
-      url: secureUrl(channel.querySelector("link").textContent),
-      thumbnail: secureUrl(channel.querySelector("image url").textContent)
+      publisher: channel.getElementsByTagNameNS(this.namespace, "author")[0]?.textContent,
+      title: channel.querySelector("title")?.textContent,
+      description: channel.querySelector("description")?.textContent,
+      url: secureUrl(channel.querySelector("link")?.textContent),
+      thumbnail: itunesThumbnail != null ? itunesThumbnail : secureUrl(channel.querySelector("image url")?.textContent)
     }
 
     if(!await this.db.getKey("podcasts", podcast.ID)) {
@@ -148,7 +159,8 @@ export class Player {
           audioLength: Number.parseInt(audioLength),
           audioType: enclosure.getAttribute("type"),
           playedLength: 0,
-          isDownloaded: false
+          isDownloaded: false,
+          podcastTitle: podcast.title
         });
       }
     } 

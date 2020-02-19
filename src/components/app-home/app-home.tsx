@@ -77,12 +77,14 @@ export class AppHome {
             : <div class="shows">
               {this.episodes.map((episode) =>
                 <app-playcard key={episode.ID}
-                  podcastThumbnail={episode.url ? episode.url : this.podcasts[0].url}
+                  podcastID = {episode.ID}
+                  podcastTitle={episode.podcastTitle}
+                  podcastThumbnail={episode.url}
                   episodeTitle={episode.title}
-                  podcastTitle={this.podcasts[0].title}
                   episodeDescription={episode.description}
                   created={episode.pubDate}
-                  playUrl={episode.audio} >
+                  playUrl={episode.audio}
+                  isdownloaded = {episode.isDownloaded} >
                 </app-playcard>
               )}
             </div>

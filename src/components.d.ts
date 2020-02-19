@@ -21,7 +21,9 @@ export namespace Components {
     'created': Date;
     'episodeDescription': string;
     'episodeTitle': string;
+    'isdownloaded': boolean;
     'playUrl': string;
+    'podcastID': string;
     'podcastThumbnail': string;
     'podcastTitle': string;
   }
@@ -122,7 +124,9 @@ declare namespace LocalJSX {
     'created'?: Date;
     'episodeDescription'?: string;
     'episodeTitle'?: string;
+    'isdownloaded'?: boolean;
     'playUrl'?: string;
+    'podcastID'?: string;
     'podcastThumbnail'?: string;
     'podcastTitle'?: string;
   }
